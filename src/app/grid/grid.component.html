@@ -1,0 +1,245 @@
+<div class="nav-right">
+  <a href="#"><i class="bi bi-envelope"></i></a>
+  <a href="#"><i class="bi bi-clock"></i></a>
+  <a class="bell-notification" href="#"><i class="bi bi-bell"></i></a>
+  <a href="#"><i class="bi bi-gear"></i></a>
+  <div class="user-info"><i class="bi bi-person-circle"></i> admin Admin</div>
+</div>
+<nav>
+  <div class="nav-left">
+    <a
+      href="#"
+      [class.active]="activeLink === 'dashboard'"
+      (click)="setActive('dashboard')"
+    >
+      <i class="bi bi-house-door"></i> Dashboard
+    </a>
+
+    <div class="dropdown">
+      <a
+        class="dropdown-toggle"
+        href="#"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        [class.active]="activeLink === 'agent-management'"
+        (click)="setActive('agent-management')"
+      >
+        <i class="bi bi-person"></i> Agent Management
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            [class.active]="activeLink === 'add-agent'"
+            (click)="setActive('add-agent')"
+          >
+            <i class="bi bi-plus"></i> Add Agent
+          </a>
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            [class.active]="activeLink === 'manage-agents'"
+            (click)="setActive('manage-agents')"
+          >
+            <i class="bi bi-list"></i> Manage Agents
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <a
+      href="#"
+      [class.active]="activeLink === 'calendar'"
+      (click)="setActive('calendar')"
+    >
+      <i class="bi bi-calendar"></i> Calendar
+    </a>
+
+    <a
+      href="#"
+      [class.active]="activeLink === 'ez-quote'"
+      (click)="setActive('ez-quote')"
+    >
+      <i class="bi bi-pencil-square"></i> EZ Quote
+    </a>
+
+    <a
+      href="#"
+      [class.active]="activeLink === 'lead-management'"
+      (click)="setActive('lead-management')"
+    >
+      <i class="bi bi-graph-up"></i> Lead Management
+    </a>
+
+    <a
+      href="#"
+      [class.active]="activeLink === 'activities'"
+      (click)="setActive('activities')"
+    >
+      <i class="bi bi-file-earmark-text"></i> Activities
+    </a>
+
+    <a
+      href="#"
+      [class.active]="activeLink === 'workflows'"
+      (click)="setActive('workflows')"
+    >
+      <i class="bi bi-gear"></i> Workflows
+    </a>
+
+    <a
+      href="#"
+      [class.active]="activeLink === 'chat'"
+      (click)="setActive('chat')"
+      class="chat-notification"
+    >
+      <i class="bi bi-chat-dots"></i> Chat
+    </a>
+  </div>
+</nav>
+<div class="underline"></div>
+<!-- Toolbar Layout -->
+<div class="d-flex justify-content-between align-items-center bg-light p-3">
+  <!-- Left Section -->
+  <div class="d-flex align-items-center gap-2">
+    <h4 class="fw-bold text-success mb-0">Lead Management</h4>
+    <span class="text-success fw-semibold ms-5 mt-1">Leads</span>
+  </div>
+
+  <!-- Right Section -->
+  <div class="d-flex gap-2">
+    <div class="ms-3 ps-3 d-flex align-items-center">
+      <input
+        type="checkbox"
+        class="form-check-input me-2 border-3"
+        id="boardView"
+      />
+      <label class="form-check-label" for="boardView">Board View</label>
+    </div>
+    <button class="k-button k-button-lg k-rounded-md k-button-solid-success">
+      <i class="bi bi-download me-2"></i> Export to Excel
+    </button>
+    <button class="k-button k-button-md k-rounded-md k-button-solid-success">
+      Create
+    </button>
+  </div>
+</div>
+<div class="border border-success rounded p-3">
+  <!-- Top Toolbar -->
+  <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <select class="form-select w-auto">
+      <option>All Leads</option>
+    </select>
+
+    <select class="form-select w-auto">
+      <option>Select Saved Preferences</option>
+    </select>
+
+    <input
+      type="text"
+      class="form-control w-auto"
+      placeholder="Type Search Keyword"
+    />
+
+    <button class="btn btn-success-fill">🔍</button>
+
+    <div class="ms-auto d-flex gap-2">
+      <div class="d-inline-flex border rounded overflow-hidden">
+        <button type="button" class="btn btn-primary btn-sm rounded-0">
+          Non-Intl.
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm rounded-0 border-start"
+        >
+          Intl.
+        </button>
+      </div>
+
+      <button class="btn btn-success btn-sm">Clear Filters</button>
+      <button class="btn btn-success btn-sm">Bulk Edit</button>
+      <button class="btn btn-success btn-sm">Save Preferences</button>
+    </div>
+
+    <button class="btn btn-light border ms-2">⋮</button>
+  </div>
+
+  <!-- Kendo Grid -->
+  <div class="kendo-grid-container">
+    <kendo-grid
+      [data]="gridData"
+      [pageSize]="pageSize"
+      [skip]="skip"
+      [sortable]="true"
+      [pageable]="true"
+      [selectable]="true"
+      (pageChange)="pageChange($event)"
+    >
+      <!-- Actions Column -->
+      <kendo-grid-checkbox-column
+        [width]="45"
+        [headerClass]="{ 'text-center': true }"
+        [class]="{ 'text-center': true }"
+        [resizable]="false"
+        [columnMenu]="false"
+        [showSelectAll]="true"
+      ></kendo-grid-checkbox-column>
+      <kendo-grid-column field="Actions" title="Actions" class="">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="dropdown">
+            <button
+              class="btn btn-success dropdown-toggle"
+              icon="gear"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Actions
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item" href="#">Edit</a></li>
+              <li><a class="dropdown-item" href="#">Delete</a></li>
+            </ul>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- Record ID Column -->
+      <kendo-grid-column field="recordId" title="Record Id">
+      </kendo-grid-column>
+
+      <!-- Last Name Column -->
+      <kendo-grid-column field="lastName" title="Last Name">
+      </kendo-grid-column>
+
+      <!-- First Name Column -->
+      <kendo-grid-column field="firstName" title="First Name">
+      </kendo-grid-column>
+
+      <!-- Primary Email Address Column -->
+      <kendo-grid-column field="email" title="Primary Email Address">
+      </kendo-grid-column>
+
+      <!-- Primary Phone Type Column -->
+      <kendo-grid-column field="phoneType" title="Primary Phone Type">
+      </kendo-grid-column>
+
+      <!-- LMP Lead ID Column -->
+      <kendo-grid-column field="lmpLeadId" title="LMP Lead Id">
+      </kendo-grid-column>
+
+      <!-- Appointment Type Column -->
+      <kendo-grid-column field="appointmentType" title="Appointment Type">
+      </kendo-grid-column>
+
+      <!-- Booking Agency Column -->
+      <kendo-grid-column field="bookingAgency" title="Booking Agency">
+      </kendo-grid-column>
+    </kendo-grid>
+  </div>
+</div>
