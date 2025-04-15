@@ -1,113 +1,186 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { GridDataResult, GridModule, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { MenuModule } from '@progress/kendo-angular-menu';
-import { Action } from 'rxjs/internal/scheduler/Action';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { KENDO_CHARTS } from "@progress/kendo-angular-charts";
+import {
+  DataBindingDirective,
+  GridModule,
+  KENDO_GRID,
+  KENDO_GRID_EXCEL_EXPORT,
+  KENDO_GRID_PDF_EXPORT,
+  RowArgs,
+} from "@progress/kendo-angular-grid";
+import { KENDO_INPUTS } from "@progress/kendo-angular-inputs";
+import { process } from "@progress/kendo-data-query";
+import { SVGIcon, fileExcelIcon, filePdfIcon, moreVerticalIcon } from "@progress/kendo-svg-icons";
+import { employees } from "./employs";
+import { images } from "./image";
+import { RouterLink } from "@angular/router";
+import { DropDownsModule, KENDO_DROPDOWNLIST } from "@progress/kendo-angular-dropdowns";
+import { MenuModule } from "@progress/kendo-angular-menu";
+import { ButtonsModule } from "@progress/kendo-angular-buttons";
+import { IconModule } from "@progress/kendo-angular-icons";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+
+
 
 @Component({
   selector: 'app-grid',
-  standalone: true,  
-  imports: [GridModule, RouterLink, MenuModule, DropDownsModule],
+  standalone: true,   
+  imports: [GridModule, RouterLink, MenuModule, DropDownsModule, CommonModule,KENDO_DROPDOWNLIST,
+    KENDO_GRID,
+    KENDO_CHARTS,
+    KENDO_INPUTS,
+    KENDO_GRID_PDF_EXPORT,
+    KENDO_GRID_EXCEL_EXPORT, ButtonsModule,IconModule],
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  styleUrls: ['./grid.component.css'],
+  
 })
-export class GridComponent {
-  
+export class GridComponent implements  OnInit  {
+  public moreVerticalIcon: SVGIcon = moreVerticalIcon;
+  @ViewChild(GridComponent) grid!: GridComponent;
   activeLink: string = '';
+  // editedItem is already declared below, removing this duplicate declaration.
 
-ngOnInit() {
+// ngOnInit() {
   
-  const storedLink = localStorage.getItem('activeLink');
-  if (storedLink) {
-    this.activeLink = storedLink;
-  }
-}
+
+// }
 
 setActive(link: string) {
   this.activeLink = link;
   localStorage.setItem('activeLink', link); 
 }
 
-    
-  
+public editedRowIndex: number | undefined;
+public editedItem: any;
+public formGroup!: FormGroup;
+
+constructor(private fb: FormBuilder) {}
+public editHandler({ sender, rowIndex, dataItem }: { sender: any; rowIndex: number; dataItem: any }): void {
+  this.closeEditor(sender);
+
+  this.formGroup = this.fb.group({
+    id: [dataItem.id],
+    name: [dataItem.name, Validators.required],
+    email: [dataItem.email, [Validators.required, Validators.email]]
+  });
+
+  this.editedRowIndex = rowIndex;
+  sender.editRow(rowIndex, this.formGroup);
+}
+
+public cancelHandler({ sender, rowIndex }: any): void {
+  this.closeEditor(sender);
+}
+
+public saveHandler({ sender, rowIndex, formGroup, isNew }: any): void {
+  const updatedItem = formGroup.value;
+
+  if (isNew) {
+    this.gridData.push(updatedItem);
+  } else {
+    this.gridData[rowIndex] = updatedItem;
+  }
+
+  this.closeEditor(sender);
+}
+
+public removeHandler({ dataItem }: any): void {
+  const index = this.gridData.findIndex(item => item.id === dataItem.id);
+  if (index !== -1) {
+    this.gridData.splice(index, 1);
+  }
+}
+
+private closeEditor(grid: GridComponent): void {
+  grid.closeRow(this.editedRowIndex!);
+  this.editedRowIndex = undefined;
+  this.formGroup = new FormGroup({});
+}
+  closeRow(arg0: number) {
+    throw new Error("Method not implemented.");
+  }
+
     actions = [
       { text: 'Add Agent', icon: 'plus' },
       { text: 'Manage Agents', icon: 'list' }
     ];
-    public gridData: any[] = [
-      
-      {
-        
-        recordId: 111994,
-        lastName: 'TEST',
-        firstName: 'APRILLELEVEN',
-        email: 'TULSI.KULKARNI@WAIIN.COM',
-        phoneType: 'Home (565) 656-5666 - 6',
-        lmpLeadId: '',
-        appointmentType: '',
-        bookingAgency: '2222000',
-      },
-      {
-        recordId: 109907,
-        lastName: 'Nat Storage',
-        firstName: 'Marie',
-        email: 'm@e.com',
-        phoneType: 'Home (630) 555-2024',
-        lmpLeadId: '',
-        appointmentType: '',
-        bookingAgency: '2007000',
-      },
-      {
-        recordId: 111962,
-        lastName: 'Pathak 09-04',
-        firstName: 'Pooja',
-        email: 'p.u@gmail.com',
-        phoneType: 'Home (313) 233-3233',
-        lmpLeadId: 'MS-Pro',
-        appointmentType: '',
-        bookingAgency: '2222000',
-      },
-      {
-        recordId: 111993,
-        lastName: 'E-Sign III',
-        firstName: 'Test',
-        email: 'joseph.long@sinra.com',
-        phoneType: 'Mobile/Cell (630) 561-1303',
-        lmpLeadId: '',
-        appointmentType: '',
-        bookingAgency: '2222000',
-      },
-      {
-        recordId: 111992,
-        lastName: 'E-Sign II',
-        firstName: 'Test',
-        email: 'joseph.long@sinra.com',
-        phoneType: 'Mobile/Cell (630) 561-1303',
-        lmpLeadId: '',
-        appointmentType: '',
-        bookingAgency: '2222000',
-      },
-    ];
+    @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective ;
   
-    public gridView: GridDataResult | undefined;
-    public pageSize = 5;
-    public skip = 0;
+    public gridData: any[] = employees;
+    public gridView : any[]=[];
+    
   
-    constructor() {
-      this.loadItems();
+    public mySelection: string[] = [];
+    public pdfSVG: SVGIcon = filePdfIcon;
+    public excelSVG: SVGIcon = fileExcelIcon;
+  
+    public ngOnInit(): void {
+      this.gridView = this.gridData;
+      const localData = localStorage.getItem('gridData');
+      this.gridView = localData ? JSON.parse(localData) : [];
+      const storedLink = localStorage.getItem('activeLink');
+      if (storedLink) {
+        this.activeLink = storedLink;
+      }
+    }
+
+   
+    
+    public onFilter(value: Event): void {
+      const inputValue = value;
+  
+      this.gridView = process(this.gridData, {
+        filter: {
+          logic: "or",
+          filters: [
+            {
+              field: "full_name",
+              operator: "contains",
+              value: inputValue,
+            },
+            {
+              field: "job_title",
+              operator: "contains",
+              value: inputValue,
+            },
+            {
+              field: "budget",
+              operator: "contains",
+              value: inputValue,
+            },
+            {
+              field: "phone",
+              operator: "contains",
+              value: inputValue,
+            },
+            {
+              field: "address",
+              operator: "contains",
+              value: inputValue,
+            },
+          ],
+        },
+      }).data;
+  
+      if (this.dataBinding) {
+        this.dataBinding.skip = 0;
+      }
     }
   
-    public pageChange(event: PageChangeEvent): void {
-      this.skip = event.skip;
-      this.loadItems();
+    public photoURL(dataItem: { img_id: string; gender: string }): string {
+      const code: string = dataItem.img_id + dataItem.gender;
+      const image: { [Key: string]: string } = images;
+  
+      return image[code];
     }
   
-    private loadItems(): void {
-      this.gridView = {
-        data: this.gridData.slice(this.skip, this.skip + this.pageSize),
-        total: this.gridData.length,
-      };
+    public flagURL(dataItem: { country: string }): string {
+      const code: string = dataItem.country;
+      const image: { [Key: string]: string } = images;
+  
+      return image[code];
     }
   }
   

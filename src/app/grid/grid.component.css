@@ -109,26 +109,26 @@ nav {
 .underline {
   margin-top: -10px;
   height: 10px;
-  width: 2000px;
+  width: 202vh;
   background-color: #a4d65e;
 }
-/* Grid container styling */
+
 .kendo-grid-container {
   margin: 20px;
 }
 
 .k-grid-header {
-  background-color: #003366 !important; /* Dark blue header background */
-  color: white !important; /* White text for header */
+  background-color: #003366 !important;
+  color: white !important;
   font-weight: bold;
 }
 
 .k-grid td {
-  vertical-align: middle !important; /* Center-align text vertically */
+  vertical-align: middle !important;
 }
 
 .dropdown .btn-success {
-  background-color: #8dc63f !important; /* Green button for actions */
+  background-color: #8dc63f !important;
   border: none;
 }
 
@@ -146,9 +146,44 @@ nav {
   color: #0040b3;
 }
 ::ng-deep .k-grid-header th.k-header {
-  background-color: #002c77 !important; /* Light blue */
-  color: white !important; /* Black text */
+  background-color: #002c77 !important;
+  color: white !important;
   font-weight: bold;
   text-align: center;
-  border-bottom: 2px solid #ccc;
+}
+.search-btn {
+  background-color: #84b340;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover {
+  background-color: #76a137;
+}
+.custom-toggle {
+  background-color: #002f6c;
+  border-radius: 50px;
+  display: inline-flex;
+  padding: 4px;
+}
+
+.toggle-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 6px 20px;
+  border-radius: 50px;
+  transition: background-color 0.3s;
+}
+
+.toggle-btn.active {
+  background-color: #74b23e;
+  color: white;
 }

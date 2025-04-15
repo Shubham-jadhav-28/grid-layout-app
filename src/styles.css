@@ -1,1 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+/* Hide the extra row if it's from group headers or layout misalignment */
+kendo-grid thead.k-grid-header tr:first-child:empty {
+  display: none;
+}
