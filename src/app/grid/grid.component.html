@@ -1,4 +1,12 @@
 <div class="nav-right">
+  <button
+    class="dark-mode btn btn-outline-secondary"
+    (click)="toggleDarkMode()"
+  >
+    <i class="bi bi-moon-fill" *ngIf="!isDarkMode"></i>
+    <i class="bi bi-sun-fill" *ngIf="isDarkMode"></i>
+  </button>
+
   <a href="#"><i class="bi bi-envelope"></i></a>
   <a href="#"><i class="bi bi-clock"></i></a>
   <a class="bell-notification" href="#"><i class="bi bi-bell"></i></a>
@@ -105,9 +113,9 @@
 <!-- Toolbar Layout -->
 <div class="d-flex justify-content-between align-items-center bg-light p-3">
   <!-- Left Section -->
-  <div class="d-flex align-items-center gap-2">
+  <div class="d-flex align-items-center gap-2 border-none">
     <h4 class="fw-bold text-success mb-0">Lead Management</h4>
-    <span class="text-success fw-semibold ms-5 mt-1">Leads</span>
+    <span class="text-success fw-bold ms-4 mt-1">Leads</span>
   </div>
 
   <!-- Right Section -->
@@ -124,73 +132,29 @@
     <button class="k-button k-button-lg k-rounded-md k-button-solid-success">
       <i class="bi bi-download me-2"></i> Export to Excel
     </button>
-    <button class="k-button k-button-md k-rounded-md k-button-solid-success">
+    <button
+      class="k-button k-button-md k-rounded-md k-button-solid-success"
+      (click)="onCreateClick()"
+    >
       Create
     </button>
   </div>
 </div>
 <div class="border border-success rounded p-3">
-  <!-- Top Toolbar -->
-  <!-- <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-    <select class="form-select w-auto">
-      <option>All Leads</option>
-    </select>
-
-    <select class="form-select w-auto">
-      <option>Select Saved Preferences</option>
-      <option>avg smf</option>
-      <option>canada</option>
-      <option>App.setter</option>
-      <option>Canada Filter</option>
-      <option>Interstate Marie</option>
-      <option>lostswon</option>
-    </select>
-
-    <input
-      type="text"
-      class="form-control w-auto"
-      placeholder="Type Search Keyword"
-    />
-
-    <button class="btn btn-success-fill">
-      <i class="search bi bi-search"></i>
-    </button>
-
-    <div class="ms-auto d-flex gap-2">
-      <div class="d-inline-flex border rounded overflow-hidden">
-        <button type="button" class="btn btn-primary btn-sm rounded-0">
-          Non-Intl.
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary btn-sm rounded-0 border-start"
-        >
-          Intl.
-        </button>
-      </div>
-
-      <button class="btn btn-success btn-sm">Clear Filters</button>
-      <button class="btn btn-success btn-sm">Bulk Edit</button>
-      <button class="btn btn-success btn-sm">Save Preferences</button>
-    </div>
-
-    <button class="btn btn-light border ms-2">⋮</button>
-  </div> -->
-
   <!-- Kendo Grid -->
   <kendo-grid
+    *ngIf="gridView.length"
     [kendoGridBinding]="gridView"
-    kendoGridSelectBy="id"
-    [(selectedKeys)]="mySelection"
-    [selectable]="{ mode: 'multiple', drag: true }"
+    [data]="gridView"
+    [height]="500"
     [pageSize]="20"
     [pageable]="true"
     [sortable]="true"
-    [groupable]="false"
-    [reorderable]="true"
     [resizable]="true"
-    [height]="500"
+    [reorderable]="true"
     [columnMenu]="{ filter: true }"
+    [kendoGridSelectBy]="'id'"
+    [(selectedKeys)]="mySelection"
   >
     <ng-template kendoGridToolbarTemplate>
       <select class="form-select w-auto">
@@ -242,31 +206,41 @@
         </button>
       </div>
     </ng-template>
-
     <kendo-grid-checkbox-column
       [width]="45"
-      [headerClass]="{ 'text-center': true, 'checkbox-column-header': true }"
-      [class]="{ 'text-center': true, 'checkbox-column-cell': true }"
+      [headerClass]="{ 'text-center': true }"
+      [class]="{ 'text-center': true }"
       [resizable]="false"
-      [columnMenu]="true"
+      [columnMenu]="false"
       [showSelectAll]="true"
     ></kendo-grid-checkbox-column>
-    <kendo-grid-command-column [width]="220">
-      <ng-template kendoGridCellTemplate let-isNew="isNew">
-        <button kendoGridEditCommand [primary]="true">Edit</button>
-        <button kendoGridRemoveCommand>Remove</button>
-        <button
-          kendoGridSaveCommand
-          [disabled]="formGroup ? formGroup.invalid : false"
-        >
-          {{ isNew ? "Add" : "Update" }}
-        </button>
-
-        <button kendoGridCancelCommand>
-          {{ isNew ? "Discard changes" : "Cancel" }}
-        </button>
+    <!-- Actions Column -->
+    <kendo-grid-column title="Actions" [width]="150">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <div *ngIf="editedRowIndex !== rowIndex">
+          <button
+            class="btn btn-sm btn-primary"
+            (click)="onEditClick(dataItem, rowIndex)"
+          >
+            Edit
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="deleteRow(dataItem.recordId)"
+          >
+            Delete
+          </button>
+        </div>
+        <div *ngIf="editedRowIndex === rowIndex">
+          <button class="btn btn-sm btn-success me-1" (click)="onSaveClick()">
+            Save
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="cancelEdit()">
+            Cancel
+          </button>
+        </div>
       </ng-template>
-    </kendo-grid-command-column>
+    </kendo-grid-column>
     <kendo-grid-column
       field="Actions"
       title="Actions"
@@ -296,55 +270,117 @@
         </div>
       </ng-template>
     </kendo-grid-column>
+    <!-- Editable Columns -->
+    <kendo-grid-column field="recordId" title="Record ID" [width]="100">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{ dataItem.recordId }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.recordId"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
 
-    <kendo-grid-column
-      field="recordId"
-      title="Record ID"
-      [width]="100"
-    ></kendo-grid-column>
-    <kendo-grid-column
-      field="lastName"
-      title="Last Name"
-      [width]="150"
-    ></kendo-grid-column>
-    <kendo-grid-column
-      field="firstName"
-      title="First Name"
-      [width]="150"
-    ></kendo-grid-column>
+    <kendo-grid-column field="lastName" title="Last Name" [width]="150">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{ dataItem.lastName }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.lastName"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
 
-    <kendo-grid-column
-      field="primaryEmailAddress"
-      title="PrimaryEmailAddress"
-      [width]="200"
-    ></kendo-grid-column>
+    <kendo-grid-column field="firstName" title="First Name" [width]="150">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{
+          dataItem.firstName
+        }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.firstName"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="primaryEmailAddress" title="Email" [width]="200">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{
+          dataItem.primaryEmailAddress
+        }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.primaryEmailAddress"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
     <kendo-grid-column
       field="primaryPhoneType"
-      title="primaryPhoneType"
+      title="Phone Type"
       [width]="150"
-    ></kendo-grid-column>
-    <kendo-grid-column
-      field="lmpLeadId"
-      title="LMP Lead ID"
-      [width]="150"
-    ></kendo-grid-column>
+    >
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{
+          dataItem.primaryPhoneType
+        }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.primaryPhoneType"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="lmpLeadId" title="LMP Lead ID" [width]="150">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{
+          dataItem.lmpLeadId
+        }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.lmpLeadId"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
 
     <kendo-grid-column
       field="appointmentType"
       title="Appointment Type"
       [width]="150"
-    ></kendo-grid-column>
+    >
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{
+          dataItem.appointmentType
+        }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.appointmentType"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
     <kendo-grid-column
       field="bookingAgency"
       title="Booking Agency"
       [width]="150"
-    ></kendo-grid-column>
-
-    <kendo-grid-pdf
-      fileName="Employees.pdf"
-      [repeatHeaders]="true"
-    ></kendo-grid-pdf>
-
-    <kendo-grid-excel fileName="Employees.xlsx"></kendo-grid-excel>
+    >
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">{{
+          dataItem.bookingAgency
+        }}</span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          [(ngModel)]="editedItem.bookingAgency"
+          class="form-control"
+        />
+      </ng-template>
+    </kendo-grid-column>
   </kendo-grid>
 </div>

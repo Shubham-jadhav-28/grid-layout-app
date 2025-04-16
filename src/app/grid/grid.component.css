@@ -20,6 +20,9 @@ nav {
   margin-top: 40px;
   gap: 5px;
 }
+.dark-mode {
+  background-color: #002c77;
+}
 .nav-left a,
 .nav-left .dropdown-toggle {
   background-color: #002c77;
@@ -107,7 +110,7 @@ nav {
   border-radius: 50%;
 }
 .underline {
-  margin-top: -10px;
+  margin-top: -11px;
   height: 10px;
   width: 202vh;
   background-color: #a4d65e;
@@ -150,6 +153,8 @@ nav {
   color: white !important;
   font-weight: bold;
   text-align: center;
+  display: table-cell !important; /* Ensure the header is displayed */
+  visibility: visible !important;
 }
 .search-btn {
   background-color: #84b340;
