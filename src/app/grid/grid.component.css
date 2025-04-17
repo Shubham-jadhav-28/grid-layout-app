@@ -153,16 +153,14 @@ nav {
   color: white !important;
   font-weight: bold;
   text-align: center;
-  display: table-cell !important; /* Ensure the header is displayed */
-  visibility: visible !important;
 }
 .search-btn {
   background-color: #84b340;
   color: white;
   border: none;
   border-radius: 5px;
-  width: 40px;
-  height: 30px;
+  width: 50px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,4 +189,10 @@ nav {
 .toggle-btn.active {
   background-color: #74b23e;
   color: white;
+}
+::ng-deep .custom-search-box input.k-input-inner {
+  padding: 7px 10px !important;
+}
+.form-select {
+  width: 16rem;
 }

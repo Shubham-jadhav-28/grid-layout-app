@@ -8,9 +8,9 @@
   </button>
 
   <a href="#"><i class="bi bi-envelope"></i></a>
-  <a href="#"><i class="bi bi-clock"></i></a>
-  <a class="bell-notification" href="#"><i class="bi bi-bell"></i></a>
   <a href="#"><i class="bi bi-gear"></i></a>
+  <a class="bell-notification" href="#"><i class="bi bi-bell"></i></a>
+  <a href="#"> <i class="bi bi-envelope-paper"></i></a>
   <div class="user-info"><i class="bi bi-person-circle"></i> admin Admin</div>
 </div>
 <nav>
@@ -20,7 +20,7 @@
       [class.active]="activeLink === 'dashboard'"
       (click)="setActive('dashboard')"
     >
-      <i class="bi bi-house-door"></i> Dashboard
+      <i class="bi bi-speedometer2 me-2"></i> Dashboard
     </a>
 
     <div class="dropdown">
@@ -80,7 +80,7 @@
       [class.active]="activeLink === 'lead-management'"
       (click)="setActive('lead-management')"
     >
-      <i class="bi bi-graph-up"></i> Lead Management
+      <i class="bi bi-diagram-3 fs-5 me-2"></i> Lead Management
     </a>
 
     <a
@@ -88,7 +88,7 @@
       [class.active]="activeLink === 'activities'"
       (click)="setActive('activities')"
     >
-      <i class="bi bi-file-earmark-text"></i> Activities
+      <i class="bi bi-list-ul me-2"></i> Activities
     </a>
 
     <a
@@ -96,7 +96,7 @@
       [class.active]="activeLink === 'workflows'"
       (click)="setActive('workflows')"
     >
-      <i class="bi bi-gear"></i> Workflows
+      <i class="bi bi-gear text-white"></i> Workflows
     </a>
 
     <a
@@ -157,19 +157,20 @@
     [(selectedKeys)]="mySelection"
   >
     <ng-template kendoGridToolbarTemplate>
-      <select class="form-select w-auto">
+      <select class="form-select">
         <option>All Leads</option>
       </select>
-      <select class="form-select w-25">
+      <select class="form-select">
         <option>Select Saved Preferences</option>
-        <option>avg smf</option>
-        <option>canada</option>
-        <option>App.setter</option>
-        <option>Canada Filter</option>
-        <option>Interstate Marie</option>
-        <option>lostswon</option>
+        <option>avg smf <i class="bi bi-trash"></i></option>
+        <option>canada <i class="bi bi-trash"></i></option>
+        <option>App.setter <i class="bi bi-trash"></i></option>
+        <option>Canada Filter <i class="bi bi-trash"></i></option>
+        <option>Interstate Marie <i class="bi bi-trash"></i></option>
+        <option>lostswon <i class="bi bi-trash"></i></option>
       </select>
       <kendo-textbox
+        class="custom-search-box"
         [style.width.px]="250"
         placeholder=" Type Search Keyword..."
         (valueChange)="onFilter($event)"
@@ -214,7 +215,7 @@
       [columnMenu]="false"
       [showSelectAll]="true"
     ></kendo-grid-checkbox-column>
-    <!-- Actions Column -->
+
     <kendo-grid-column title="Actions" [width]="150">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
         <div *ngIf="editedRowIndex !== rowIndex">
@@ -225,7 +226,7 @@
             Edit
           </button>
           <button
-            class="btn btn-sm btn-danger"
+            class="btn btn-sm btn-danger ms-2"
             (click)="deleteRow(dataItem.recordId)"
           >
             Delete
@@ -380,6 +381,36 @@
           [(ngModel)]="editedItem.bookingAgency"
           class="form-control"
         />
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="assignedDate" title="Assigned Date" [width]="140">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.assignedDate }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Sales Rep -->
+    <kendo-grid-column field="salesRep" title="Sales Rep" [width]="180">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.salesRep }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Coordinator -->
+    <kendo-grid-column field="coordinator" title="Coordinator" [width]="200">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.coordinator }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Sync to Mobile -->
+    <kendo-grid-column
+      field="syncToMobile"
+      title="Sync to Mobile"
+      [width]="140"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <input type="checkbox" [checked]="dataItem.syncToMobile" />
       </ng-template>
     </kendo-grid-column>
   </kendo-grid>

@@ -27,7 +27,7 @@
     "@progress/kendo-angular-dateinputs": "18.5.1",
     "@progress/kendo-angular-dialog": "18.5.1",
     "@progress/kendo-angular-dropdowns": "18.5.1",
-    "@progress/kendo-angular-excel-export": "18.5.1",
+    "@progress/kendo-angular-excel-export": "^18.5.1",
     "@progress/kendo-angular-grid": "^18.5.0",
     "@progress/kendo-angular-icons": "18.5.1",
     "@progress/kendo-angular-inputs": "18.5.1",
@@ -39,6 +39,7 @@
     "@progress/kendo-angular-navigation": "18.5.1",
     "@progress/kendo-angular-pager": "18.5.1",
     "@progress/kendo-angular-pdf-export": "18.5.1",
+    "@progress/kendo-angular-popup": "18.5.1",
     "@progress/kendo-angular-progressbar": "18.5.1",
     "@progress/kendo-angular-toolbar": "18.5.1",
     "@progress/kendo-angular-treeview": "18.5.1",
@@ -56,8 +57,7 @@
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "@progress/kendo-angular-popup": "18.5.1"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.4",
