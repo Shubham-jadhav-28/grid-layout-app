@@ -51,6 +51,7 @@ import { FormsModule, NgModel } from '@angular/forms';
     NgIf,
     FormsModule,
     ExcelModule,
+    
   ],
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.css'],
@@ -64,11 +65,12 @@ export class GridComponent implements OnInit {
     this.activeLink = link;
     localStorage.setItem('activeLink', link);
   }
-
-  actions = [
-    { text: 'Add Agent', icon: 'plus' },
-    { text: 'Manage Agents', icon: 'list' },
-  ];
+ // This holds the current sort state
+ 
+  // actions = [
+  //   { text: 'Add Agent', icon: 'plus' },
+  //   { text: 'Manage Agents', icon: 'list' },
+  // ];
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
 
   public gridData: any[] = employees;
@@ -113,6 +115,8 @@ export class GridComponent implements OnInit {
         lmpLeadId: '',
         appointmentType: '',
         bookingAgency: '',
+  
+
       };
       this.gridData.unshift(newPerson);
       localStorage.setItem('gridData', JSON.stringify(this.gridData));
@@ -142,6 +146,7 @@ export class GridComponent implements OnInit {
       lmpLeadId: '',
       appointmentType: '',
       bookingAgency: '',
+      
     };
 
     this.gridView.unshift(newItem);

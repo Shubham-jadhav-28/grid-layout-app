@@ -143,8 +143,8 @@
 <div class="border border-success rounded p-3">
   <!-- Kendo Grid -->
   <kendo-grid
-    *ngIf="gridView.length"
     [kendoGridBinding]="gridView"
+    [selectable]="{ mode: 'multiple', drag: true }"
     [data]="gridView"
     [height]="500"
     [pageSize]="20"
@@ -253,11 +253,9 @@
         <div class="dropdown">
           <button
             class="btn btn-success dropdown-toggle"
-            icon="gear"
             type="button"
             [id]="'dropdownMenuButton' + rowIndex"
             data-bs-toggle="dropdown"
-            aria-expanded="false"
           >
             <i class="bi bi-gear"></i> Actions
           </button>
@@ -383,23 +381,66 @@
         />
       </ng-template>
     </kendo-grid-column>
+    <!-- Assigned Date -->
     <kendo-grid-column field="assignedDate" title="Assigned Date" [width]="140">
-      <ng-template kendoGridCellTemplate let-dataItem>
-        {{ dataItem.assignedDate }}
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <!-- display mode -->
+        <span *ngIf="editedRowIndex !== rowIndex">
+          {{ dataItem.assignedDate }}
+        </span>
+        <!-- edit mode -->
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          class="form-control"
+          [(ngModel)]="editedItem.assignedDate"
+          type="date"
+        />
       </ng-template>
     </kendo-grid-column>
 
     <!-- Sales Rep -->
     <kendo-grid-column field="salesRep" title="Sales Rep" [width]="180">
-      <ng-template kendoGridCellTemplate let-dataItem>
-        {{ dataItem.salesRep }}
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">
+          {{ dataItem.salesRep }}
+        </span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          class="form-control"
+          [(ngModel)]="editedItem.salesRep"
+        />
       </ng-template>
     </kendo-grid-column>
 
     <!-- Coordinator -->
     <kendo-grid-column field="coordinator" title="Coordinator" [width]="200">
-      <ng-template kendoGridCellTemplate let-dataItem>
-        {{ dataItem.coordinator }}
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">
+          {{ dataItem.coordinator }}
+        </span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          class="form-control"
+          [(ngModel)]="editedItem.coordinator"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Sync to Mobile (as checkbox) -->
+    <kendo-grid-column
+      field="syncToMobile"
+      title="Sync to Mobile"
+      [width]="140"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <span *ngIf="editedRowIndex !== rowIndex">
+          <input type="checkbox" [checked]="dataItem.syncToMobile" disabled />
+        </span>
+        <input
+          *ngIf="editedRowIndex === rowIndex"
+          type="checkbox"
+          [(ngModel)]="editedItem.syncToMobile"
+        />
       </ng-template>
     </kendo-grid-column>
 
