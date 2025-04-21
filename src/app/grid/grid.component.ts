@@ -51,7 +51,6 @@ import { FormsModule, NgModel } from '@angular/forms';
     NgIf,
     FormsModule,
     ExcelModule,
-    
   ],
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.css'],
@@ -65,8 +64,8 @@ export class GridComponent implements OnInit {
     this.activeLink = link;
     localStorage.setItem('activeLink', link);
   }
- // This holds the current sort state
- 
+  // This holds the current sort state
+
   // actions = [
   //   { text: 'Add Agent', icon: 'plus' },
   //   { text: 'Manage Agents', icon: 'list' },
@@ -115,8 +114,6 @@ export class GridComponent implements OnInit {
         lmpLeadId: '',
         appointmentType: '',
         bookingAgency: '',
-  
-
       };
       this.gridData.unshift(newPerson);
       localStorage.setItem('gridData', JSON.stringify(this.gridData));
@@ -128,6 +125,16 @@ export class GridComponent implements OnInit {
     if (storedLink) {
       this.activeLink = storedLink;
     }
+  }
+  public onRowClick(event: any): void {
+    if (
+      this.editedRowIndex !== null &&
+      this.editedRowIndex !== event.rowIndex
+    ) {
+      this.onSaveClick();
+    }
+
+    this.onEditClick(event.dataItem, event.rowIndex);
   }
 
   public onEditClick(item: any, rowIndex: number): void {
@@ -146,22 +153,29 @@ export class GridComponent implements OnInit {
       lmpLeadId: '',
       appointmentType: '',
       bookingAgency: '',
-      
     };
 
     this.gridView.unshift(newItem);
     this.editedItem = { ...newItem };
-    // this.gridView = [...this.gridData];
+
     this.editedRowIndex = 0;
   }
 
   public onSaveClick(): void {
-    if (this.editedRowIndex !== null) {
-      const updatedGrid = [...this.gridView];
-      updatedGrid[this.editedRowIndex] = this.editedItem;
-      this.gridView = updatedGrid;
-      localStorage.setItem('gridData', JSON.stringify(this.gridView));
+    if (this.editedRowIndex !== null && this.editedItem) {
+      const index = this.gridData.findIndex(
+        (item) => item.id === this.editedItem.id
+      );
+      if (index !== -1) {
+        this.gridData[index] = { ...this.editedItem };
+        this.gridView = [...this.gridData];
+        localStorage.setItem('gridData', JSON.stringify(this.gridData));
+      }
+      this.cancelEdit();
     }
+  }
+
+  public onCancelClick(): void {
     this.cancelEdit();
   }
 

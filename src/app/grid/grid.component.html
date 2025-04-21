@@ -155,6 +155,7 @@
     [columnMenu]="{ filter: true }"
     [kendoGridSelectBy]="'id'"
     [(selectedKeys)]="mySelection"
+    (cellClick)="onRowClick($event)"
   >
     <ng-template kendoGridToolbarTemplate>
       <select class="form-select">
