@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { KENDO_CHARTS } from '@progress/kendo-angular-charts';
 import {
   DataBindingDirective,
@@ -137,6 +137,18 @@ export class GridComponent implements OnInit {
     this.onEditClick(event.dataItem, event.rowIndex);
   }
 
+  @HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent): void {
+  const targetElement = event.target as HTMLElement;
+
+
+  const clickedInsideGrid = targetElement.closest('kendo-grid');
+  if (this.editedRowIndex !== null && !clickedInsideGrid) {
+    this.onSaveClick();
+  }
+}
+
+
   public onEditClick(item: any, rowIndex: number): void {
     this.editedRowIndex = rowIndex;
     this.editedItem = { ...item };
@@ -154,26 +166,26 @@ export class GridComponent implements OnInit {
       appointmentType: '',
       bookingAgency: '',
     };
-
-    this.gridView.unshift(newItem);
-    this.editedItem = { ...newItem };
-
+  
+    this.gridView = [newItem, ...this.gridView];
+ 
     this.editedRowIndex = 0;
+    this.editedItem = { ...newItem };
+  
+    localStorage.setItem('gridData', JSON.stringify(this.gridView));
   }
+  
 
   public onSaveClick(): void {
-    if (this.editedRowIndex !== null && this.editedItem) {
-      const index = this.gridData.findIndex(
-        (item) => item.id === this.editedItem.id
-      );
-      if (index !== -1) {
-        this.gridData[index] = { ...this.editedItem };
-        this.gridView = [...this.gridData];
-        localStorage.setItem('gridData', JSON.stringify(this.gridData));
-      }
-      this.cancelEdit();
+    if (this.editedRowIndex !== null) {
+      const updatedGrid = [...this.gridView];
+      updatedGrid[this.editedRowIndex] = this.editedItem;
+      this.gridView = updatedGrid;
+      localStorage.setItem('gridData', JSON.stringify(this.gridView));
     }
+    this.cancelEdit();
   }
+  
 
   public onCancelClick(): void {
     this.cancelEdit();
