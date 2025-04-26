@@ -156,6 +156,7 @@
     [kendoGridSelectBy]="'id'"
     [(selectedKeys)]="mySelection"
     (cellClick)="onRowClick($event)"
+    (dblclick)="onSaveClick()"
   >
     <ng-template kendoGridToolbarTemplate>
       <select class="form-select">

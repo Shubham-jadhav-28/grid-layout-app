@@ -182,6 +182,8 @@ onDocumentClick(event: MouseEvent): void {
       updatedGrid[this.editedRowIndex] = this.editedItem;
       this.gridView = updatedGrid;
       localStorage.setItem('gridData', JSON.stringify(this.gridView));
+
+      
     }
     this.cancelEdit();
   }
@@ -215,4 +217,4 @@ onDocumentClick(event: MouseEvent): void {
         )
     );
   }
-}
+} 
