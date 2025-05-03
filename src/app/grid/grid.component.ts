@@ -29,6 +29,7 @@ import { MenuModule } from '@progress/kendo-angular-menu';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { IconModule } from '@progress/kendo-angular-icons';
 import { FormsModule, NgModel } from '@angular/forms';
+import { ExcelExportComponent } from '@progress/kendo-angular-excel-export';
 
 @Component({
   selector: 'app-grid',
@@ -54,22 +55,20 @@ import { FormsModule, NgModel } from '@angular/forms';
   ],
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.css'],
+  
 })
 export class GridComponent implements OnInit {
   public moreVerticalIcon: SVGIcon = moreVerticalIcon;
   @ViewChild(GridComponent) grid!: GridComponent;
+  
   activeLink: string = '';
 
   setActive(link: string) {
     this.activeLink = link;
     localStorage.setItem('activeLink', link);
   }
-  // This holds the current sort state
-
-  // actions = [
-  //   { text: 'Add Agent', icon: 'plus' },
-  //   { text: 'Manage Agents', icon: 'list' },
-  // ];
+ 
+  
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
 
   public gridData: any[] = employees;
@@ -101,7 +100,7 @@ export class GridComponent implements OnInit {
     document.body.classList.toggle('dark-mode', this.isDarkMode);
 
     const localData = localStorage.getItem('gridData');
-    this.gridData = localData ? JSON.parse(localData) : [];
+    this.gridData = localData ? JSON.parse(localData) : [...employees];
 
     if (this.gridData.length === 0) {
       const newPerson = {
@@ -116,6 +115,7 @@ export class GridComponent implements OnInit {
         bookingAgency: '',
       };
       this.gridData.unshift(newPerson);
+      this.gridData = [...this.gridView];
       localStorage.setItem('gridData', JSON.stringify(this.gridData));
     }
 
@@ -125,6 +125,7 @@ export class GridComponent implements OnInit {
     if (storedLink) {
       this.activeLink = storedLink;
     }
+    
   }
   public onRowClick(event: any): void {
     if (
@@ -152,9 +153,11 @@ onDocumentClick(event: MouseEvent): void {
   public onEditClick(item: any, rowIndex: number): void {
     this.editedRowIndex = rowIndex;
     this.editedItem = { ...item };
+    localStorage.setItem('gridData', JSON.stringify(this.gridView));
   }
 
   public onCreateClick(): void {
+    
     const newItem = {
       id: this.generateUniqueId(),
       recordId: '',
@@ -171,8 +174,7 @@ onDocumentClick(event: MouseEvent): void {
  
     this.editedRowIndex = 0;
     this.editedItem = { ...newItem };
-  
-    localStorage.setItem('gridData', JSON.stringify(this.gridView));
+ 
   }
   
 
@@ -184,8 +186,8 @@ onDocumentClick(event: MouseEvent): void {
       localStorage.setItem('gridData', JSON.stringify(this.gridView));
 
       
+      this.cancelEdit();
     }
-    this.cancelEdit();
   }
   
 
@@ -217,4 +219,17 @@ onDocumentClick(event: MouseEvent): void {
         )
     );
   }
+  public areaList: Array<string> = [
+    "Boston",
+    "Chicago",
+    "Houston",
+    "Los Angeles",
+    "Miami",
+    "New York",
+    "Philadelphia",
+    "San Francisco",
+    "Seattle",
+  ];
+  
 } 
+                                              

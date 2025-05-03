@@ -132,6 +132,7 @@
     <button class="k-button k-button-lg k-rounded-md k-button-solid-success">
       <i class="bi bi-download me-2"></i> Export to Excel
     </button>
+
     <button
       class="k-button k-button-md k-rounded-md k-button-solid-success"
       (click)="onCreateClick()"
@@ -162,15 +163,13 @@
       <select class="form-select">
         <option>All Leads</option>
       </select>
-      <select class="form-select">
-        <option>Select Saved Preferences</option>
-        <option>avg smf <i class="bi bi-trash"></i></option>
-        <option>canada <i class="bi bi-trash"></i></option>
-        <option>App.setter <i class="bi bi-trash"></i></option>
-        <option>Canada Filter <i class="bi bi-trash"></i></option>
-        <option>Interstate Marie <i class="bi bi-trash"></i></option>
-        <option>lostswon <i class="bi bi-trash"></i></option>
-      </select>
+      <kendo-dropdownlist
+        [data]="areaList"
+        [defaultItem]="'Select city...'"
+        class="dropdown"
+      >
+      </kendo-dropdownlist>
+
       <kendo-textbox
         class="custom-search-box"
         [style.width.px]="250"
@@ -218,7 +217,7 @@
       [showSelectAll]="true"
     ></kendo-grid-checkbox-column>
 
-    <kendo-grid-column title="Actions" [width]="150">
+    <!-- <kendo-grid-column title="Actions" [width]="150">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
         <div *ngIf="editedRowIndex !== rowIndex">
           <button
@@ -243,7 +242,7 @@
           </button>
         </div>
       </ng-template>
-    </kendo-grid-column>
+    </kendo-grid-column> -->
     <kendo-grid-column
       field="Actions"
       title="Actions"
@@ -251,23 +250,41 @@
       [headerClass]="'text-center'"
       [class]="'text-center'"
     >
-      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
-        <div class="dropdown">
-          <button
-            class="btn btn-success dropdown-toggle"
-            type="button"
-            [id]="'dropdownMenuButton' + rowIndex"
-            data-bs-toggle="dropdown"
-          >
-            <i class="bi bi-gear"></i> Actions
-          </button>
-          <ul
-            class="dropdown-menu"
-            [attr.aria-labelledby]="'dropdownMenuButton' + rowIndex"
-          >
-            <li><a class="dropdown-item" href="#">Edit</a></li>
-            <li><a class="dropdown-item" href="#">Delete</a></li>
-          </ul>
+      <<ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+        <button
+          class="btn btn-success dropdown-toggle"
+          type="button"
+          [id]="'dropdownMenuButton' + rowIndex"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-gear"></i> Actions
+        </button>
+
+        <div
+          class="dropdown-menu p-3"
+          [attr.aria-labelledby]="'dropdownMenuButton' + rowIndex"
+          style="min-width: 300px"
+        >
+          <div class="row">
+            <div class="col-6">
+              <a class="dropdown-item">View Lead</a>
+              <a class="dropdown-item">Edit Lead</a>
+              <a class="dropdown-item">Assign to Sales Rep</a>
+              <a class="dropdown-item">Schedule Appointment</a>
+              <a class="dropdown-item">Possible Matches</a>
+              <a class="dropdown-item">Tie and Untie Qualified Leads</a>
+              <a class="dropdown-item">Audit Trail</a>
+            </div>
+            <div class="col-6">
+              <a class="dropdown-item">Estimates</a>
+              <a class="dropdown-item">Lead Documents</a>
+              <a class="dropdown-item">Register With STS</a>
+              <a class="dropdown-item">Survey List</a>
+              <a class="dropdown-item">Duplicate Lead</a>
+              <a class="dropdown-item">Chat</a>
+            </div>
+          </div>
         </div>
       </ng-template>
     </kendo-grid-column>
