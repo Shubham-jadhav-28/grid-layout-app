@@ -165,7 +165,7 @@
       </select>
       <kendo-dropdownlist
         [data]="areaList"
-        [defaultItem]="'Select city...'"
+        [(ngModel)]="selectedPreference"
         class="dropdown"
       >
       </kendo-dropdownlist>
@@ -197,6 +197,7 @@
         </button>
         <button
           class="k-button k-button-lg k-rounded-md k-button-solid-success"
+          (click)="savePreference()"
         >
           Save Preferences
         </button>
@@ -250,7 +251,7 @@
       [headerClass]="'text-center'"
       [class]="'text-center'"
     >
-      <<ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
         <button
           class="btn btn-success dropdown-toggle"
           type="button"

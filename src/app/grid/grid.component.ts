@@ -52,12 +52,14 @@ import { ExcelExportComponent } from '@progress/kendo-angular-excel-export';
     NgIf,
     FormsModule,
     ExcelModule,
+    FormsModule
   ],
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.css'],
   
 })
 export class GridComponent implements OnInit {
+  public areaList: Array<string> = [];
   public moreVerticalIcon: SVGIcon = moreVerticalIcon;
   @ViewChild(GridComponent) grid!: GridComponent;
   
@@ -81,6 +83,7 @@ export class GridComponent implements OnInit {
   public editedItem: any;
   public searchKeyword: string = '';
   public isDarkMode = false;
+  public selectedPreference: string = '';
 
   toggleDarkMode(): void {
     this.isDarkMode = !this.isDarkMode;
@@ -98,10 +101,10 @@ export class GridComponent implements OnInit {
     const theme = localStorage.getItem('theme');
     this.isDarkMode = theme === 'dark';
     document.body.classList.toggle('dark-mode', this.isDarkMode);
-
+  
     const localData = localStorage.getItem('gridData');
     this.gridData = localData ? JSON.parse(localData) : [...employees];
-
+  
     if (this.gridData.length === 0) {
       const newPerson = {
         id: this.generateUniqueId(),
@@ -118,15 +121,19 @@ export class GridComponent implements OnInit {
       this.gridData = [...this.gridView];
       localStorage.setItem('gridData', JSON.stringify(this.gridData));
     }
-
+  
     this.gridView = [...this.gridData];
-
+  
     const storedLink = localStorage.getItem('activeLink');
     if (storedLink) {
       this.activeLink = storedLink;
     }
-    
+  
+    // ✅ Load preferences from localStorage (no defaults)
+    const saved = localStorage.getItem('preferences');
+    this.areaList = saved ? JSON.parse(saved) : [];
   }
+  
   public onRowClick(event: any): void {
     if (
       this.editedRowIndex !== null &&
@@ -219,17 +226,22 @@ onDocumentClick(event: MouseEvent): void {
         )
     );
   }
-  public areaList: Array<string> = [
-    "Boston",
-    "Chicago",
-    "Houston",
-    "Los Angeles",
-    "Miami",
-    "New York",
-    "Philadelphia",
-    "San Francisco",
-    "Seattle",
-  ];
+  
+  savePreference(): void {
+    const prefName = prompt('Enter a preference name:');
+    if (prefName && prefName.trim()) {
+      const trimmedName = prefName.trim();
+  
+      if (!this.areaList.includes(trimmedName)) {
+        this.areaList.push(trimmedName);
+  
+       
+        localStorage.setItem('preferences', JSON.stringify(this.areaList));
+      } else {
+        alert('Preference already exists!');
+      }
+    }
+  }
   
 } 
                                               
